@@ -1,11 +1,11 @@
 import React from 'react';
 import {PermissionsProvider} from './src/contexts/PermissionsContext';
-import CameraComponent from './src/components/CameraComponent';
+import {CameraScreen} from './src/screens/CameraScreen';
 
 function App(): React.JSX.Element {
   return (
     <PermissionsProvider>
-      <CameraComponent />
+      <CameraScreen />
     </PermissionsProvider>
   );
 }
