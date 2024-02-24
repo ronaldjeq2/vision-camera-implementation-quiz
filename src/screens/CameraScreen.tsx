@@ -5,9 +5,8 @@ import {Camera} from 'react-native-vision-camera';
 import {CameraProvider} from '../contexts/CameraContext';
 
 export const CameraScreen = () => {
-  const {hasCameraPermission} = usePermissions();
+  const {hasCameraPermission, hasMediaPermission} = usePermissions();
   const cameraRef = useRef<Camera>(null);
-
   return (
     <>
       {hasCameraPermission && (
