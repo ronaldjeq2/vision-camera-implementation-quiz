@@ -6,17 +6,17 @@ import {
   useCameraDevice,
 } from 'react-native-vision-camera';
 import {CameraComponentStyles} from '../styles/CameraComponent.styles';
-
+import {Icon} from '@rneui/themed';
+import {SettingsComponent} from './SettingsComponent';
+import { useCameraContext } from '../hooks/useCameraContext';
 type TCameraRef = Camera;
 
 interface ICameraProps {
-  device: CameraDevice | undefined;
-  takeSimplePhoto: () => void;
 }
 
 export const CameraComponent = forwardRef<TCameraRef, ICameraProps>(
   (props, ref) => {
-    const {device, takeSimplePhoto} = props;
+    const {device, takeSimplePhoto} = useCameraContext();
     if (!device) {
       return (
         <View>
@@ -36,6 +36,9 @@ export const CameraComponent = forwardRef<TCameraRef, ICameraProps>(
           <TouchableOpacity
             style={CameraComponentStyles.takePhotoButton}
             onPress={takeSimplePhoto}></TouchableOpacity>
+          <View style={CameraComponentStyles.settingsContainer}>
+            <SettingsComponent />
+          </View>
         </View>
       );
     }
