@@ -6,7 +6,7 @@ import {useCameraContext} from '../hooks/useCameraContext';
 
 export const ListItemComponent = () => {
   const {ListItemContainer, fpsText} = ListItemComponentStyles;
-  const {toggleCamera} = useCameraContext();
+  const {toggleCamera, flashOn, toggleFlashCamera} = useCameraContext();
   return (
     <>
       <ListItem
@@ -20,8 +20,12 @@ export const ListItemComponent = () => {
         key={2}
         bottomDivider
         containerStyle={ListItemContainer}
-        onPress={() => console.log('hi', l)}>
-        <Icon type="material" name="flash-on" size={20} />
+        onPress={toggleFlashCamera}>
+        <Icon
+          type="material"
+          name={flashOn ? 'flash-off' : 'flash-on'}
+          size={20}
+        />
       </ListItem>
       <ListItem
         key={3}

@@ -4,4 +4,6 @@ export interface ICameraContext {
   device: CameraDevice | undefined;
   takeSimplePhoto: () => Promise<void>;
   toggleCamera: () => void;
+  toggleFlashCamera: () => void;
+  flashOn: boolean;
 }

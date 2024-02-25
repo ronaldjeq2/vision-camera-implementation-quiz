@@ -1,48 +1,64 @@
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
+import {Permission} from 'react-native';
 import {PermissionsAndroid, Platform} from 'react-native';
+import {useIsEmulator} from 'react-native-device-info';
 
 export const usePermissionStorageMedias = () => {
   const [hasPermission, setHasPermission] = useState(false);
+  const {result: isVirtual} = useIsEmulator();
 
   const checkPermissions = async () => {
+    const permissionsToCheck: Permission[] = [];
+    if (isVirtual) {
+      permissionsToCheck.push(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      );
+    }
     if (parseInt(`${Platform.Version}`, 10) >= 33) {
-      return Promise.all([
-        PermissionsAndroid.check(
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
-        ),
-        PermissionsAndroid.check(
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO,
-        ),
-      ]).then(
-        ([hasReadMediaImagesPermission, hasReadMediaVideoPermission]) =>
-          hasReadMediaImagesPermission && hasReadMediaVideoPermission,
+      permissionsToCheck.push(
+        PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+        PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO,
       );
     } else {
-      return PermissionsAndroid.check(
+      permissionsToCheck.push(
         PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
       );
     }
+    return Promise.all(
+      permissionsToCheck.map(permissionItem =>
+        PermissionsAndroid.check(permissionItem),
+      ),
+    ).then(results => results.every(result => result));
   };
 
   const requestPermissions = async () => {
     let isGranted = await checkPermissions();
+
     if (!isGranted) {
+      const permissionsToRequest: Permission[] = [];
+      if (isVirtual) {
+        permissionsToRequest.push(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        );
+      }
       if (parseInt(`${Platform.Version}`, 10) >= 33) {
-        isGranted = await PermissionsAndroid.requestMultiple([
+        permissionsToRequest.push(
           PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
           PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO,
-        ]).then(
-          statuses =>
-            statuses[PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES] ===
-              PermissionsAndroid.RESULTS.GRANTED &&
-            statuses[PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO] ===
-              PermissionsAndroid.RESULTS.GRANTED,
         );
       } else {
-        isGranted = await PermissionsAndroid.request(
+        permissionsToRequest.push(
           PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        ).then(status => status === PermissionsAndroid.RESULTS.GRANTED);
+        );
       }
+      isGranted = await PermissionsAndroid.requestMultiple(
+        permissionsToRequest,
+      ).then(statuses =>
+        permissionsToRequest.every(
+          permission =>
+            statuses[permission] === PermissionsAndroid.RESULTS.GRANTED,
+        ),
+      );
     }
 
     setHasPermission(isGranted);

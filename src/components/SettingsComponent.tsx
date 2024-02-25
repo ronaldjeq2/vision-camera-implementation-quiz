@@ -2,7 +2,7 @@ import {Icon} from '@rneui/themed';
 import {ListItem} from '@rneui/themed';
 import {useState} from 'react';
 import {SettingsComponentStyles} from '../styles/SettingsComponent.styles';
-import { ListItemComponent } from './ListItemComponent';
+import {ListItemComponent} from './ListItemComponent';
 
 export const SettingsComponent = () => {
   const [expanded, setExpanded] = useState(false);
