@@ -1,12 +1,16 @@
-import {Text, View} from 'react-native';
+import {PhotoIdentifier} from '@react-native-camera-roll/camera-roll';
+import {Image, Text, View} from 'react-native';
 
 interface IPreviewPhotosComponent {
   photosHistoricalLength: number;
+  photoList: PhotoIdentifier[];
 }
 
 export const PreviewPhotosComponent = ({
   photosHistoricalLength,
+  photoList,
 }: IPreviewPhotosComponent) => {
+  console.log({photoList}, photoList[0].node);
   return (
     <View
       style={{
@@ -16,35 +20,28 @@ export const PreviewPhotosComponent = ({
         height: 55,
       }}>
       <View style={{flexDirection: 'row', height: '100%'}}>
-        <View
-          style={{
-            backgroundColor: 'blue',
-            width: 30,
-            height: '100%',
-            transform: [{rotate: '0deg'}],
-            position: 'absolute',
-            zIndex: 3,
-          }}></View>
-        <View
-          style={{
-            backgroundColor: 'yellow',
-            width: 30,
-            height: '100%',
-            transform: [{rotate: '15deg'}],
-            position: 'absolute',
-            zIndex: 2,
-            left: 15,
-          }}></View>
-        <View
-          style={{
-            backgroundColor: 'green',
-            width: 30,
-            height: '100%',
-            transform: [{rotate: '30deg'}],
-            position: 'absolute',
-            zIndex: 1,
-            left: 30,
-          }}></View>
+        {photoList.map((photoInfo: PhotoIdentifier, index) => {
+          const {node} = photoInfo
+          const {id, image} = node
+          const {uri} = image
+          const rotateImage = index * 15;
+          const zIndexValue = 3 - index;
+          return (
+            <View
+              key={id}
+              style={{
+                backgroundColor: 'blue',
+                width: 30,
+                height: '100%',
+                transform: [{rotate: `${rotateImage}deg`}],
+                position: 'absolute',
+                zIndex: zIndexValue,
+                left: rotateImage,
+              }}>
+              <Image source={{uri: uri}} width={30} height={55}/>
+            </View>
+          );
+        })}
       </View>
       <View
         style={{

@@ -42,6 +42,7 @@ export const CameraComponent = forwardRef<TCameraRef, ICameraProps>(
             <View style={CameraComponentStyles.previewContainerPhotos}>
               <PreviewPhotosComponent
                 photosHistoricalLength={photosHistoricalLength}
+                photoList={photoList}
               />
             </View>
           )}
