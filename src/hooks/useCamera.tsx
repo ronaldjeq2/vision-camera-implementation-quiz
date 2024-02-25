@@ -71,7 +71,7 @@ export const useCamera = ({cameraRef, hasMediaPermission}: IUseCameraProps) => {
       const filePath = file.path;
       const photoSaved = await CameraRoll.saveAsset(`file://${filePath}`, {
         type: 'photo',
-        album: cameraConstants.ALBUM_NAME
+        album: cameraConstants.ALBUM_NAME,
       });
       setPhotosHistoricalLength(current => ++current);
       console.log({photoSaved});

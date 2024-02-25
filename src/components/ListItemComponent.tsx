@@ -72,9 +72,9 @@ export const ListItemComponent = () => {
             pressItem: () => itemPressed(cameraConstants.INITIAL_FPS),
           },
           {
-            title: `${cameraConstants.TWO_HUNDRED_AND_TWENTY_FPS}fps`,
+            title: `${cameraConstants.THIRTY_FPS}fps`,
             pressItem: () =>
-              itemPressed(cameraConstants.TWO_HUNDRED_AND_TWENTY_FPS),
+              itemPressed(cameraConstants.THIRTY_FPS),
           },
         ]}
         isVisible={isSheetVisible}
