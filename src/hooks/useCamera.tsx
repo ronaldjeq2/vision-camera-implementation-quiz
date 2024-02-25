@@ -11,19 +11,21 @@ export const useCamera = ({cameraRef}: IUseCameraProps) => {
   const [cameraType, setCameraType] = useState<'front' | 'back'>('back');
   const [flashOn, setFlashOn] = useState<boolean>(false);
   const {result: isVirtual} = useIsEmulator();
-  const device = useCameraDevice(cameraType);
-  const toggleFlashCamera = useCallback(() => {
+  const [soundOn, setSoundOn] = useState<boolean>(false);
 
-    if (!flashOn && device?.hasFlash) {
-      setFlashOn(current => !current);
-    } else if (!flashOn && !device?.hasFlash) {
+  const device = useCameraDevice(cameraType);
+  console.log({device});
+
+  const toggleFlashCamera = useCallback(() => {
+    if (!device?.hasFlash) {
       console.log(
         'El dispositivo no cuenta con flash para estas características',
       );
-    } else {
-      setFlashOn(current => !current);
+      return;
     }
-  }, [device, flashOn]);
+
+    setFlashOn(current => !current);
+  }, [device]);
 
   const toggleCamera = () => {
     setCameraType(currentType => (currentType === 'back' ? 'front' : 'back'));
@@ -49,6 +51,7 @@ export const useCamera = ({cameraRef}: IUseCameraProps) => {
         qualityPrioritization:
           isVirtual || cameraType === 'front' ? 'speed' : 'balanced',
         flash: flashOn ? 'on' : 'off',
+        enableShutterSound: true,
       });
       if (photo) {
         savePhoto(photo);

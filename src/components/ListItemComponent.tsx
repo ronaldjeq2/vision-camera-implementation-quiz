@@ -6,7 +6,8 @@ import {useCameraContext} from '../hooks/useCameraContext';
 
 export const ListItemComponent = () => {
   const {ListItemContainer, fpsText} = ListItemComponentStyles;
-  const {toggleCamera, flashOn, toggleFlashCamera} = useCameraContext();
+  const {toggleCamera, flashOn, toggleFlashCamera, device} = useCameraContext();
+  const {hasFlash} = device
   return (
     <>
       <ListItem
@@ -23,7 +24,7 @@ export const ListItemComponent = () => {
         onPress={toggleFlashCamera}>
         <Icon
           type="material"
-          name={flashOn ? 'flash-off' : 'flash-on'}
+          name={!hasFlash || flashOn ? 'flash-off' : 'flash-on'}
           size={20}
         />
       </ListItem>
