@@ -10,7 +10,7 @@ export const PreviewPhotosComponent = ({
   photosHistoricalLength,
   photoList,
 }: IPreviewPhotosComponent) => {
-  console.log({photoList}, photoList[0].node);
+
   return (
     <View
       style={{

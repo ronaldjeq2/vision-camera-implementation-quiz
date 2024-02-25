@@ -68,7 +68,6 @@ export const useCamera = ({cameraRef, hasMediaPermission}: IUseCameraProps) => {
 
   const savePhoto = async (file: PhotoFile) => {
     try {
-      console.log(file);
       const filePath = file.path;
       const photoSaved = await CameraRoll.saveAsset(`file://${filePath}`, {
         type: 'photo',
