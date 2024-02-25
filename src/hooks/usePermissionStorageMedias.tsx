@@ -1,11 +1,15 @@
 import {useState} from 'react';
 import {Permission} from 'react-native';
 import {PermissionsAndroid, Platform} from 'react-native';
-import {useIsEmulator} from 'react-native-device-info';
 
-export const usePermissionStorageMedias = () => {
+interface IUsePermissionStorageMediasProps {
+  isVirtual: boolean;
+}
+
+export const usePermissionStorageMedias = ({
+  isVirtual,
+}: IUsePermissionStorageMediasProps) => {
   const [hasPermission, setHasPermission] = useState(false);
-  const {result: isVirtual} = useIsEmulator();
 
   const checkPermissions = async () => {
     const permissionsToCheck: Permission[] = [];

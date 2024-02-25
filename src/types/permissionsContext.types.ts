@@ -3,4 +3,5 @@ export interface IPermissionsContext {
   requestCameraPermission: () => Promise<void>;
   hasMediaPermission: boolean;
   requestMediaPermission: () => Promise<void>;
+  getAllPermissions: () => Promise<void>;
 }

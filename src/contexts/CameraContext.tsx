@@ -4,7 +4,11 @@ import {ICameraContext} from '../types/cameraContext.types';
 
 export const CameraContext = createContext<ICameraContext | null>(null);
 
-export const CameraProvider = ({children, cameraRef}: any) => {
+export const CameraProvider = ({
+  children,
+  cameraRef,
+  hasMediaPermission,
+}: any) => {
   const {
     takeSimplePhoto,
     toggleCamera,
@@ -16,8 +20,12 @@ export const CameraProvider = ({children, cameraRef}: any) => {
     fpsCamera,
     toggleFpsCamera,
     format,
+    photoList,
+    photosHistoricalLength,
+    getHistoricalPhotos,
   } = useCamera({
     cameraRef,
+    hasMediaPermission,
   });
 
   return (
@@ -33,6 +41,9 @@ export const CameraProvider = ({children, cameraRef}: any) => {
         fpsCamera,
         toggleFpsCamera,
         format,
+        photoList,
+        photosHistoricalLength,
+        getHistoricalPhotos,
       }}>
       {children}
     </CameraContext.Provider>

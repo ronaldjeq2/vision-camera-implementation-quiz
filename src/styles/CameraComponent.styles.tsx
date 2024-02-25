@@ -17,7 +17,12 @@ export const CameraComponentStyles = StyleSheet.create({
   settingsContainer: {
     position: 'absolute',
     right: 30,
-    top:10,
+    top: 10,
     width: 60,
+  },
+  previewContainerPhotos: {
+    position: 'absolute',
+    left: 30,
+    bottom: 30,
   } 
 });

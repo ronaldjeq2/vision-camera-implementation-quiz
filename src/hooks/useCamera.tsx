@@ -9,12 +9,14 @@ import {
 } from 'react-native-vision-camera';
 import useShutterSound from './useShutterSound';
 import {cameraConstants} from '../constants/camera.constants';
+import {useAlbum} from './useAlbum';
 
 interface IUseCameraProps {
   cameraRef: RefObject<Camera>;
+  hasMediaPermission: boolean;
 }
 
-export const useCamera = ({cameraRef}: IUseCameraProps) => {
+export const useCamera = ({cameraRef, hasMediaPermission}: IUseCameraProps) => {
   const [cameraType, setCameraType] = useState<'front' | 'back'>('back');
   const [flashOn, setFlashOn] = useState<boolean>(false);
   const {result: isVirtual} = useIsEmulator();
@@ -23,9 +25,23 @@ export const useCamera = ({cameraRef}: IUseCameraProps) => {
   const [fpsCamera, setFpsCamera] = useState<number>(
     cameraConstants.INITIAL_FPS,
   );
+  const {
+    getPhotos,
+    photoList,
+    photosHistoricalLength,
+    getHistoricalPhotos,
+    setPhotosHistoricalLength,
+  } = useAlbum();
 
   const device = useCameraDevice(cameraType);
   const format = useCameraFormat(device, [{fps: fpsCamera}]);
+
+  useEffect(() => {
+    if (hasMediaPermission) {
+      getHistoricalPhotos();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasMediaPermission]);
 
   const toggleSoundCamera = () => {
     setSoundOn(current => !current);
@@ -52,14 +68,17 @@ export const useCamera = ({cameraRef}: IUseCameraProps) => {
 
   const savePhoto = async (file: PhotoFile) => {
     try {
-      console.log(file);
-      await CameraRoll.saveAsset(`file://${file.path}`, {
+      const filePath = file.path;
+      const photoSaved = await CameraRoll.saveAsset(`file://${filePath}`, {
         type: 'photo',
+        album: cameraConstants.ALBUM_NAME
       });
+      setPhotosHistoricalLength(current => ++current);
+      console.log({photoSaved});
     } catch (e) {
       console.log('savePhoto', e);
     } finally {
-      console.log('phote saved');
+      getPhotos();
     }
   };
 
@@ -93,5 +112,8 @@ export const useCamera = ({cameraRef}: IUseCameraProps) => {
     fpsCamera,
     toggleFpsCamera,
     format,
+    photoList,
+    photosHistoricalLength,
+    getHistoricalPhotos,
   };
 };

@@ -4,13 +4,17 @@ import {Camera} from 'react-native-vision-camera';
 import {CameraComponentStyles} from '../styles/CameraComponent.styles';
 import {SettingsComponent} from './SettingsComponent';
 import {useCameraContext} from '../hooks/useCameraContext';
+import {PreviewPhotosComponent} from './PreviewPhotosComponent';
 type TCameraRef = Camera;
 
-interface ICameraProps {}
+interface ICameraProps {
+  hasMediaPermission: boolean
+}
 
 export const CameraComponent = forwardRef<TCameraRef, ICameraProps>(
   (props, ref) => {
-    const {device, takeSimplePhoto, format} = useCameraContext();
+    const {device, takeSimplePhoto, format, photoList, photosHistoricalLength} =
+      useCameraContext();
     if (!device) {
       return (
         <View>
@@ -34,6 +38,14 @@ export const CameraComponent = forwardRef<TCameraRef, ICameraProps>(
           <View style={CameraComponentStyles.settingsContainer}>
             <SettingsComponent />
           </View>
+          {photoList.length > 0 && (
+            <View style={CameraComponentStyles.previewContainerPhotos}>
+              <PreviewPhotosComponent
+                photosHistoricalLength={photosHistoricalLength}
+                photoList={photoList}
+              />
+            </View>
+          )}
         </View>
       );
     }
