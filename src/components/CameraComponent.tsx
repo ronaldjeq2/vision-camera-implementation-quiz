@@ -1,23 +1,18 @@
-import React, {LegacyRef, forwardRef} from 'react';
+import React, {forwardRef} from 'react';
 import {Text, View, TouchableOpacity} from 'react-native';
-import {
-  Camera,
-  CameraDevice,
-  useCameraDevice,
-} from 'react-native-vision-camera';
+import {Camera} from 'react-native-vision-camera';
 import {CameraComponentStyles} from '../styles/CameraComponent.styles';
-import {Icon} from '@rneui/themed';
 import {SettingsComponent} from './SettingsComponent';
-import { useCameraContext } from '../hooks/useCameraContext';
+import {useCameraContext} from '../hooks/useCameraContext';
 type TCameraRef = Camera;
 
-interface ICameraProps {
-}
+interface ICameraProps {}
 
 export const CameraComponent = forwardRef<TCameraRef, ICameraProps>(
   (props, ref) => {
-    const {device, takeSimplePhoto} = useCameraContext();
-    if (!device) {
+    const {device, takeSimplePhoto, fpsCamera} = useCameraContext();
+    console.log({fpsCamera});
+    if (!device || !fpsCamera) {
       return (
         <View>
           <Text>No está disponible la cámara para el dispositivo</Text>
@@ -31,7 +26,13 @@ export const CameraComponent = forwardRef<TCameraRef, ICameraProps>(
             style={CameraComponentStyles.camera}
             device={device}
             isActive={true}
+            format={{
+              ...device.formats[0],
+              maxFps: fpsCamera,
+              minFps: fpsCamera,
+            }}
             photo
+            fps={fpsCamera}
           />
           <TouchableOpacity
             style={CameraComponentStyles.takePhotoButton}

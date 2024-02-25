@@ -3,6 +3,7 @@ import {RefObject, useCallback, useEffect, useState} from 'react';
 import {useIsEmulator} from 'react-native-device-info';
 import {Camera, PhotoFile, useCameraDevice} from 'react-native-vision-camera';
 import useShutterSound from './useShutterSound';
+import {cameraConstants} from '../constants/camera.constants';
 
 interface IUseCameraProps {
   cameraRef: RefObject<Camera>;
@@ -14,12 +15,20 @@ export const useCamera = ({cameraRef}: IUseCameraProps) => {
   const {result: isVirtual} = useIsEmulator();
   const [soundOn, setSoundOn] = useState<boolean>(true);
   const {playSound} = useShutterSound();
+  const [fpsCamera, setFpsCamera] = useState<number>(
+    cameraConstants.INITIAL_FPS,
+  );
 
   const device = useCameraDevice(cameraType);
-
+    console.log({device})
   const toggleSoundCamera = () => {
     setSoundOn(current => !current);
   };
+
+  const toggleFpsCamera = (numberFps: number) => {
+    setFpsCamera(numberFps);
+  };
+
 
   const toggleFlashCamera = useCallback(() => {
     if (!device?.hasFlash) {
@@ -38,6 +47,7 @@ export const useCamera = ({cameraRef}: IUseCameraProps) => {
 
   const savePhoto = async (file: PhotoFile) => {
     try {
+      console.log(file)
       await CameraRoll.saveAsset(`file://${file.path}`, {
         type: 'photo',
       });
@@ -75,5 +85,7 @@ export const useCamera = ({cameraRef}: IUseCameraProps) => {
     toggleFlashCamera,
     toggleSoundCamera,
     soundOn,
+    fpsCamera,
+    toggleFpsCamera
   };
 };

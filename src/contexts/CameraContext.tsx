@@ -13,6 +13,8 @@ export const CameraProvider = ({children, cameraRef}: any) => {
     flashOn,
     soundOn,
     toggleSoundCamera,
+    fpsCamera,
+    toggleFpsCamera,
   } = useCamera({
     cameraRef,
   });
@@ -27,6 +29,8 @@ export const CameraProvider = ({children, cameraRef}: any) => {
         flashOn,
         soundOn,
         toggleSoundCamera,
+        fpsCamera,
+        toggleFpsCamera,
       }}>
       {children}
     </CameraContext.Provider>

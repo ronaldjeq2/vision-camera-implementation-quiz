@@ -8,5 +8,5 @@ export const ListItemComponentStyles = StyleSheet.create({
     paddingVertical: 5,
     borderBottomWidth: 5,
   },
-  fpsText: {color: 'green'},
+  fpsText: {color: 'white', fontSize: 12},
 });

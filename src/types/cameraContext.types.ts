@@ -8,4 +8,6 @@ export interface ICameraContext {
   flashOn: boolean;
   soundOn: boolean;
   toggleSoundCamera: () => void;
+  fpsCamera: number
+  toggleFpsCamera: (item: number) => void;
 }

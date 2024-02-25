@@ -3,6 +3,9 @@ import {ListItem} from '@rneui/themed';
 import {ListItemComponentStyles} from '../styles/ListItemComponent.styles';
 import {Text} from 'react-native';
 import {useCameraContext} from '../hooks/useCameraContext';
+import BottomSheetComponent from './BottomSheetComponent';
+import {cameraConstants} from '../constants/camera.constants';
+import {useState} from 'react';
 
 export const ListItemComponent = () => {
   const {ListItemContainer, fpsText} = ListItemComponentStyles;
@@ -13,8 +16,17 @@ export const ListItemComponent = () => {
     device,
     soundOn,
     toggleSoundCamera,
+    fpsCamera,
+    toggleFpsCamera,
   } = useCameraContext();
   const {hasFlash} = device || {};
+  const [isSheetVisible, setIsSheetVisible] = useState(false);
+
+  const itemPressed = (itemValue: number) => {
+    toggleFpsCamera(itemValue)
+    setIsSheetVisible(false)
+  };
+
   return (
     <>
       <ListItem
@@ -42,17 +54,31 @@ export const ListItemComponent = () => {
         onPress={toggleSoundCamera}>
         <Icon
           type="material"
-          name={soundOn ? 'volume-down' : 'volume-mute' }
+          name={soundOn ? 'volume-down' : 'volume-mute'}
           size={20}
         />
       </ListItem>
       <ListItem
         key={4}
         bottomDivider
-        containerStyle={ListItemContainer}
-        onPress={() => console.log('hi')}>
-        <Text style={fpsText}>60fps</Text>
+        containerStyle={[ListItemContainer, {backgroundColor: '#4474fe'}]}
+        onPress={() => setIsSheetVisible(true)}>
+        <Text style={fpsText}>{fpsCamera}fps</Text>
       </ListItem>
+      <BottomSheetComponent
+        listItems={[
+          {
+            title: `${cameraConstants.INITIAL_FPS}fps`,
+            pressItem: () => itemPressed(cameraConstants.INITIAL_FPS),
+          },
+          {
+            title: `${cameraConstants.TWO_HUNDRED_AND_TWENTY_FPS}fps`,
+            pressItem: () =>
+              itemPressed(cameraConstants.TWO_HUNDRED_AND_TWENTY_FPS),
+          },
+        ]}
+        isVisible={isSheetVisible}
+      />
     </>
   );
 };
