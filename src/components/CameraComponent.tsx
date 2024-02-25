@@ -10,9 +10,8 @@ interface ICameraProps {}
 
 export const CameraComponent = forwardRef<TCameraRef, ICameraProps>(
   (props, ref) => {
-    const {device, takeSimplePhoto, fpsCamera} = useCameraContext();
-    console.log({fpsCamera});
-    if (!device || !fpsCamera) {
+    const {device, takeSimplePhoto, format} = useCameraContext();
+    if (!device) {
       return (
         <View>
           <Text>No está disponible la cámara para el dispositivo</Text>
@@ -26,13 +25,8 @@ export const CameraComponent = forwardRef<TCameraRef, ICameraProps>(
             style={CameraComponentStyles.camera}
             device={device}
             isActive={true}
-            format={{
-              ...device.formats[0],
-              maxFps: fpsCamera,
-              minFps: fpsCamera,
-            }}
+            format={format}
             photo
-            fps={fpsCamera}
           />
           <TouchableOpacity
             style={CameraComponentStyles.takePhotoButton}

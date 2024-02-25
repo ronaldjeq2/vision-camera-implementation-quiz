@@ -1,4 +1,4 @@
-import {CameraDevice} from 'react-native-vision-camera';
+import {CameraDevice, CameraDeviceFormat} from 'react-native-vision-camera';
 
 export interface ICameraContext {
   device: CameraDevice | undefined;
@@ -10,4 +10,5 @@ export interface ICameraContext {
   toggleSoundCamera: () => void;
   fpsCamera: number
   toggleFpsCamera: (item: number) => void;
+  format: CameraDeviceFormat | undefined;
 }
