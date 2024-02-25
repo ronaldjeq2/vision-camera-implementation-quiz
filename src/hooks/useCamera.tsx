@@ -1,7 +1,8 @@
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
-import {RefObject, useCallback, useState} from 'react';
+import {RefObject, useCallback, useEffect, useState} from 'react';
 import {useIsEmulator} from 'react-native-device-info';
 import {Camera, PhotoFile, useCameraDevice} from 'react-native-vision-camera';
+import useShutterSound from './useShutterSound';
 
 interface IUseCameraProps {
   cameraRef: RefObject<Camera>;
@@ -11,10 +12,14 @@ export const useCamera = ({cameraRef}: IUseCameraProps) => {
   const [cameraType, setCameraType] = useState<'front' | 'back'>('back');
   const [flashOn, setFlashOn] = useState<boolean>(false);
   const {result: isVirtual} = useIsEmulator();
-  const [soundOn, setSoundOn] = useState<boolean>(false);
+  const [soundOn, setSoundOn] = useState<boolean>(true);
+  const {playSound} = useShutterSound();
 
   const device = useCameraDevice(cameraType);
-  console.log({device});
+
+  const toggleSoundCamera = () => {
+    setSoundOn(current => !current);
+  };
 
   const toggleFlashCamera = useCallback(() => {
     if (!device?.hasFlash) {
@@ -33,8 +38,6 @@ export const useCamera = ({cameraRef}: IUseCameraProps) => {
 
   const savePhoto = async (file: PhotoFile) => {
     try {
-      console.log('savePhoto', file.path);
-
       await CameraRoll.saveAsset(`file://${file.path}`, {
         type: 'photo',
       });
@@ -51,9 +54,12 @@ export const useCamera = ({cameraRef}: IUseCameraProps) => {
         qualityPrioritization:
           isVirtual || cameraType === 'front' ? 'speed' : 'balanced',
         flash: flashOn ? 'on' : 'off',
-        enableShutterSound: true,
+        enableShutterSound: false,
       });
       if (photo) {
+        if (soundOn) {
+          playSound();
+        }
         savePhoto(photo);
       }
     } catch (e) {
@@ -61,5 +67,13 @@ export const useCamera = ({cameraRef}: IUseCameraProps) => {
     }
   };
 
-  return {device, takeSimplePhoto, toggleCamera, flashOn, toggleFlashCamera};
+  return {
+    device,
+    takeSimplePhoto,
+    toggleCamera,
+    flashOn,
+    toggleFlashCamera,
+    toggleSoundCamera,
+    soundOn,
+  };
 };

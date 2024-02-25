@@ -6,8 +6,15 @@ import {useCameraContext} from '../hooks/useCameraContext';
 
 export const ListItemComponent = () => {
   const {ListItemContainer, fpsText} = ListItemComponentStyles;
-  const {toggleCamera, flashOn, toggleFlashCamera, device} = useCameraContext();
-  const {hasFlash} = device
+  const {
+    toggleCamera,
+    flashOn,
+    toggleFlashCamera,
+    device,
+    soundOn,
+    toggleSoundCamera,
+  } = useCameraContext();
+  const {hasFlash} = device || {};
   return (
     <>
       <ListItem
@@ -24,7 +31,7 @@ export const ListItemComponent = () => {
         onPress={toggleFlashCamera}>
         <Icon
           type="material"
-          name={!hasFlash || flashOn ? 'flash-off' : 'flash-on'}
+          name={hasFlash && flashOn ? 'flash-on' : 'flash-off'}
           size={20}
         />
       </ListItem>
@@ -32,21 +39,18 @@ export const ListItemComponent = () => {
         key={3}
         bottomDivider
         containerStyle={ListItemContainer}
-        onPress={() => console.log('hi', l)}>
-        <Icon type="material" name="volume-up" size={20} />
+        onPress={toggleSoundCamera}>
+        <Icon
+          type="material"
+          name={soundOn ? 'volume-down' : 'volume-mute' }
+          size={20}
+        />
       </ListItem>
       <ListItem
         key={4}
         bottomDivider
         containerStyle={ListItemContainer}
-        onPress={() => console.log('hi', l)}>
-        <Icon name="place" size={20} />
-      </ListItem>
-      <ListItem
-        key={5}
-        bottomDivider
-        containerStyle={ListItemContainer}
-        onPress={() => console.log('hi', l)}>
+        onPress={() => console.log('hi')}>
         <Text style={fpsText}>60fps</Text>
       </ListItem>
     </>

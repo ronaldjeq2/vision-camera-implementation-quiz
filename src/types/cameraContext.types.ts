@@ -6,4 +6,6 @@ export interface ICameraContext {
   toggleCamera: () => void;
   toggleFlashCamera: () => void;
   flashOn: boolean;
+  soundOn: boolean;
+  toggleSoundCamera: () => void;
 }

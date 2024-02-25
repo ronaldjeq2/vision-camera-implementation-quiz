@@ -5,10 +5,17 @@ import {ICameraContext} from '../types/cameraContext.types';
 export const CameraContext = createContext<ICameraContext | null>(null);
 
 export const CameraProvider = ({children, cameraRef}: any) => {
-  const {takeSimplePhoto, toggleCamera, device, toggleFlashCamera, flashOn} =
-    useCamera({
-      cameraRef,
-    });
+  const {
+    takeSimplePhoto,
+    toggleCamera,
+    device,
+    toggleFlashCamera,
+    flashOn,
+    soundOn,
+    toggleSoundCamera,
+  } = useCamera({
+    cameraRef,
+  });
 
   return (
     <CameraContext.Provider
@@ -18,6 +25,8 @@ export const CameraProvider = ({children, cameraRef}: any) => {
         device,
         toggleFlashCamera,
         flashOn,
+        soundOn,
+        toggleSoundCamera,
       }}>
       {children}
     </CameraContext.Provider>
