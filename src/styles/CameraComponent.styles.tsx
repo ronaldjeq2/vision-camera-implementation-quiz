@@ -14,4 +14,10 @@ export const CameraComponentStyles = StyleSheet.create({
     borderWidth: 5,
     borderColor: '#d7d2d2',
   },
+  settingsContainer: {
+    position: 'absolute',
+    right: 30,
+    top:10,
+    width: 60,
+  } 
 });

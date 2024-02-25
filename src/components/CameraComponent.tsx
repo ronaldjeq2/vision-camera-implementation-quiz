@@ -1,22 +1,16 @@
-import React, {LegacyRef, forwardRef} from 'react';
+import React, {forwardRef} from 'react';
 import {Text, View, TouchableOpacity} from 'react-native';
-import {
-  Camera,
-  CameraDevice,
-  useCameraDevice,
-} from 'react-native-vision-camera';
+import {Camera} from 'react-native-vision-camera';
 import {CameraComponentStyles} from '../styles/CameraComponent.styles';
-
+import {SettingsComponent} from './SettingsComponent';
+import {useCameraContext} from '../hooks/useCameraContext';
 type TCameraRef = Camera;
 
-interface ICameraProps {
-  device: CameraDevice | undefined;
-  takeSimplePhoto: () => void;
-}
+interface ICameraProps {}
 
 export const CameraComponent = forwardRef<TCameraRef, ICameraProps>(
   (props, ref) => {
-    const {device, takeSimplePhoto} = props;
+    const {device, takeSimplePhoto, format} = useCameraContext();
     if (!device) {
       return (
         <View>
@@ -31,11 +25,15 @@ export const CameraComponent = forwardRef<TCameraRef, ICameraProps>(
             style={CameraComponentStyles.camera}
             device={device}
             isActive={true}
+            format={format}
             photo
           />
           <TouchableOpacity
             style={CameraComponentStyles.takePhotoButton}
             onPress={takeSimplePhoto}></TouchableOpacity>
+          <View style={CameraComponentStyles.settingsContainer}>
+            <SettingsComponent />
+          </View>
         </View>
       );
     }
