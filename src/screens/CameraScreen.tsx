@@ -6,14 +6,19 @@ import {CameraProvider} from '../contexts/CameraContext';
 
 export const CameraScreen = () => {
 
-  const {hasCameraPermission} = usePermissions();
+  const {hasCameraPermission, hasMediaPermission} = usePermissions();
   const cameraRef = useRef<Camera>(null);
 
   return (
     <>
       {hasCameraPermission && (
-        <CameraProvider cameraRef={cameraRef}>
-          <CameraComponent ref={cameraRef} />
+        <CameraProvider
+          cameraRef={cameraRef}
+          hasMediaPermission={hasMediaPermission}>
+          <CameraComponent
+            ref={cameraRef}
+            hasMediaPermission={hasMediaPermission}
+          />
         </CameraProvider>
       )}
     </>

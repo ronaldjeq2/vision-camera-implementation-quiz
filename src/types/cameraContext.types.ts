@@ -1,3 +1,4 @@
+import {PhotoIdentifier} from '@react-native-camera-roll/camera-roll';
 import {CameraDevice, CameraDeviceFormat} from 'react-native-vision-camera';
 
 export interface ICameraContext {
@@ -8,7 +9,10 @@ export interface ICameraContext {
   flashOn: boolean;
   soundOn: boolean;
   toggleSoundCamera: () => void;
-  fpsCamera: number
+  fpsCamera: number;
   toggleFpsCamera: (item: number) => void;
   format: CameraDeviceFormat | undefined;
+  photoList: Array<PhotoIdentifier>;
+  photosHistoricalLength: number,
+  getHistoricalPhotos: () => Promise<void>;
 }
