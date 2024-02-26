@@ -10,6 +10,7 @@ import {
 import useShutterSound from './useShutterSound';
 import {cameraConstants} from '../constants/camera.constants';
 import {useAlbum} from './useAlbum';
+import {showToast} from '../utils/totast.utils';
 
 interface IUseCameraProps {
   cameraRef: RefObject<Camera>;
@@ -25,6 +26,7 @@ export const useCamera = ({cameraRef, hasMediaPermission}: IUseCameraProps) => {
   const [fpsCamera, setFpsCamera] = useState<number>(
     cameraConstants.INITIAL_FPS,
   );
+  const [enableHdr, setEnableHdr] = useState(false);
   const {
     getPhotos,
     photoList,
@@ -35,6 +37,7 @@ export const useCamera = ({cameraRef, hasMediaPermission}: IUseCameraProps) => {
 
   const device = useCameraDevice(cameraType);
   const format = useCameraFormat(device, [{fps: fpsCamera}]);
+  const supportsHdr = format?.supportsPhotoHdr;
 
   useEffect(() => {
     if (hasMediaPermission) {
@@ -42,6 +45,14 @@ export const useCamera = ({cameraRef, hasMediaPermission}: IUseCameraProps) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasMediaPermission]);
+
+  const toggleHdrCamera = () => {
+    if (!supportsHdr) {
+      showToast('El dispositivo no cuenta con Hdr para estas características');
+      return;
+    }
+    setEnableHdr(current => !current);
+  };
 
   const toggleSoundCamera = () => {
     setSoundOn(current => !current);
@@ -53,9 +64,10 @@ export const useCamera = ({cameraRef, hasMediaPermission}: IUseCameraProps) => {
 
   const toggleFlashCamera = useCallback(() => {
     if (!device?.hasFlash) {
-      console.log(
+      showToast(
         'El dispositivo no cuenta con flash para estas características',
       );
+
       return;
     }
 
@@ -69,14 +81,12 @@ export const useCamera = ({cameraRef, hasMediaPermission}: IUseCameraProps) => {
   const savePhoto = async (file: PhotoFile) => {
     try {
       const filePath = file.path;
-      const photoSaved = await CameraRoll.saveAsset(`file://${filePath}`, {
+      await CameraRoll.saveAsset(`file://${filePath}`, {
         type: 'photo',
-        album: cameraConstants.ALBUM_NAME
+        album: cameraConstants.ALBUM_NAME,
       });
       setPhotosHistoricalLength(current => ++current);
-      console.log({photoSaved});
     } catch (e) {
-      console.log('savePhoto', e);
     } finally {
       getPhotos();
     }
@@ -96,9 +106,7 @@ export const useCamera = ({cameraRef, hasMediaPermission}: IUseCameraProps) => {
         }
         savePhoto(photo);
       }
-    } catch (e) {
-      console.log('takeSimplePhoto', {e});
-    }
+    } catch (e) {}
   };
 
   return {
@@ -115,5 +123,7 @@ export const useCamera = ({cameraRef, hasMediaPermission}: IUseCameraProps) => {
     photoList,
     photosHistoricalLength,
     getHistoricalPhotos,
+    enableHdr,
+    toggleHdrCamera,
   };
 };
