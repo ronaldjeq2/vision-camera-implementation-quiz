@@ -18,13 +18,15 @@ export const ListItemComponent = () => {
     toggleSoundCamera,
     fpsCamera,
     toggleFpsCamera,
+    enableHdr,
+    toggleHdrCamera,
   } = useCameraContext();
   const {hasFlash} = device || {};
   const [isSheetVisible, setIsSheetVisible] = useState(false);
 
   const itemPressed = (itemValue: number) => {
-    toggleFpsCamera(itemValue)
-    setIsSheetVisible(false)
+    toggleFpsCamera(itemValue);
+    setIsSheetVisible(false);
   };
 
   return (
@@ -65,6 +67,17 @@ export const ListItemComponent = () => {
         onPress={() => setIsSheetVisible(true)}>
         <Text style={fpsText}>{fpsCamera}fps</Text>
       </ListItem>
+      <ListItem
+        key={5}
+        bottomDivider
+        containerStyle={ListItemContainer}
+        onPress={toggleHdrCamera}>
+        <Icon
+          type="material"
+          name={enableHdr ? 'hdr-on' : 'hdr-off'}
+          size={20}
+        />
+      </ListItem>
       <BottomSheetComponent
         listItems={[
           {
@@ -73,8 +86,7 @@ export const ListItemComponent = () => {
           },
           {
             title: `${cameraConstants.THIRTY_FPS}fps`,
-            pressItem: () =>
-              itemPressed(cameraConstants.THIRTY_FPS),
+            pressItem: () => itemPressed(cameraConstants.THIRTY_FPS),
           },
         ]}
         isVisible={isSheetVisible}

@@ -25,6 +25,7 @@ export const useCamera = ({cameraRef, hasMediaPermission}: IUseCameraProps) => {
   const [fpsCamera, setFpsCamera] = useState<number>(
     cameraConstants.INITIAL_FPS,
   );
+  const [enableHdr, setEnableHdr] = useState(false);
   const {
     getPhotos,
     photoList,
@@ -35,6 +36,8 @@ export const useCamera = ({cameraRef, hasMediaPermission}: IUseCameraProps) => {
 
   const device = useCameraDevice(cameraType);
   const format = useCameraFormat(device, [{fps: fpsCamera}]);
+  console.log(device?.physicalDevices);
+  const supportsHdr = format?.supportsPhotoHdr
 
   useEffect(() => {
     if (hasMediaPermission) {
@@ -42,6 +45,16 @@ export const useCamera = ({cameraRef, hasMediaPermission}: IUseCameraProps) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasMediaPermission]);
+
+  const toggleHdrCamera = () => {
+    if (!supportsHdr) {
+      console.log(
+        'El dispositivo no cuenta con Hdr para estas características',
+      );
+      return;
+    }
+    setEnableHdr(current => !current);
+  };
 
   const toggleSoundCamera = () => {
     setSoundOn(current => !current);
@@ -115,5 +128,7 @@ export const useCamera = ({cameraRef, hasMediaPermission}: IUseCameraProps) => {
     photoList,
     photosHistoricalLength,
     getHistoricalPhotos,
+    enableHdr,
+    toggleHdrCamera
   };
 };

@@ -15,4 +15,6 @@ export interface ICameraContext {
   photoList: Array<PhotoIdentifier>;
   photosHistoricalLength: number,
   getHistoricalPhotos: () => Promise<void>;
+  enableHdr: boolean;
+  toggleHdrCamera: () => void;
 }

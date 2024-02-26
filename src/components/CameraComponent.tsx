@@ -8,13 +8,20 @@ import {PreviewPhotosComponent} from './PreviewPhotosComponent';
 type TCameraRef = Camera;
 
 interface ICameraProps {
-  hasMediaPermission: boolean
+  hasMediaPermission: boolean;
 }
 
 export const CameraComponent = forwardRef<TCameraRef, ICameraProps>(
   (props, ref) => {
-    const {device, takeSimplePhoto, format, photoList, photosHistoricalLength} =
-      useCameraContext();
+    const {
+      device,
+      takeSimplePhoto,
+      format,
+      photoList,
+      photosHistoricalLength,
+      enableHdr,
+    } = useCameraContext();
+    console.log({format});
     if (!device) {
       return (
         <View>
@@ -30,7 +37,8 @@ export const CameraComponent = forwardRef<TCameraRef, ICameraProps>(
             device={device}
             isActive={true}
             format={format}
-            photo
+            photo={true}
+            photoHdr={format?.supportsPhotoHdr && enableHdr}
           />
           <TouchableOpacity
             style={CameraComponentStyles.takePhotoButton}

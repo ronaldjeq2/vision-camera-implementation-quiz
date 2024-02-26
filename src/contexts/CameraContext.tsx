@@ -23,6 +23,8 @@ export const CameraProvider = ({
     photoList,
     photosHistoricalLength,
     getHistoricalPhotos,
+    enableHdr,
+    toggleHdrCamera
   } = useCamera({
     cameraRef,
     hasMediaPermission,
@@ -44,6 +46,8 @@ export const CameraProvider = ({
         photoList,
         photosHistoricalLength,
         getHistoricalPhotos,
+        enableHdr,
+        toggleHdrCamera
       }}>
       {children}
     </CameraContext.Provider>
