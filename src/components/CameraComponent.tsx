@@ -21,7 +21,7 @@ export const CameraComponent = forwardRef<TCameraRef, ICameraProps>(
       photosHistoricalLength,
       enableHdr,
     } = useCameraContext();
-    console.log({format});
+
     if (!device) {
       return (
         <View>

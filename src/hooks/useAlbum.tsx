@@ -28,7 +28,6 @@ export const useAlbum = () => {
         afterCursor = result.page_info.end_cursor;
         photoListItems.push(...result.edges);
       } catch (e) {
-        console.log('takeSimplePhoto', {e});
         hasNextPage = false;
       } finally {
         setPhotosHistoricalLength(totalPhotos);
@@ -45,9 +44,7 @@ export const useAlbum = () => {
         groupName: cameraConstants.ALBUM_NAME,
       });
       setPhotoList(photo.edges);
-    } catch (e) {
-      console.log('takeSimplePhoto', {e});
-    }
+    } catch (e) {}
   };
 
   return {
