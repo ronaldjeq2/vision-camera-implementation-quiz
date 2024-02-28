@@ -1,9 +1,14 @@
 import React, {forwardRef} from 'react';
 import {Text, View, TouchableOpacity} from 'react-native';
-import {Gesture, GestureDetector} from 'react-native-gesture-handler';
+import {
+  Gesture,
+  GestureDetector,
+  GestureHandlerRootView,
+} from 'react-native-gesture-handler';
 import Reanimated, {
   Extrapolation,
   interpolate,
+  runOnUI,
   useAnimatedProps,
   useSharedValue,
 } from 'react-native-reanimated';
@@ -39,10 +44,10 @@ export const CameraComponent = forwardRef<TCameraRef, ICameraProps>(
     const zoom = useSharedValue(device?.neutralZoom);
     const zoomOffset = useSharedValue(0);
 
-    const handleZoom = (scale: number) => {
-      const z = zoomOffset.value * scale;
+    const handleZoom = (scale: any) => {
+      'worklet';
       zoom.value = interpolate(
-        z,
+        scale,
         [0.5, 10],
         [device?.minZoom ?? 0.5, device?.maxZoom ?? 10],
         Extrapolation.CLAMP,
@@ -51,11 +56,23 @@ export const CameraComponent = forwardRef<TCameraRef, ICameraProps>(
 
     const gesture = Gesture.Pinch()
       .onBegin(() => {
-        zoomOffset.value = zoom?.value ?? 0;
+        zoomOffset.value = zoom?.value ?? 0.5;
       })
       .onUpdate(event => {
-        handleZoom(event.scale);
+        'worklet';
+        const scale = event.scale;
+        const newZoom = interpolate(
+          scale * zoomOffset.value,
+          [0.5, 10], // Ajusta estos valores basados en el rango de escala deseado
+          [device?.minZoom ?? 0.5, device?.maxZoom ?? 10],
+          Extrapolation.CLAMP,
+        );
+        zoom.value = newZoom;
       });
+
+    const animatedProps = useAnimatedProps(() => ({
+      zoom: zoom.value,
+    }));
 
     if (!device) {
       return (
@@ -65,62 +82,65 @@ export const CameraComponent = forwardRef<TCameraRef, ICameraProps>(
       );
     } else {
       return (
-        <View style={CameraComponentStyles.container}>
-          <GestureDetector gesture={gesture}>
-            <ReanimatedCamera
-              ref={ref}
-              style={CameraComponentStyles.camera}
-              device={device}
-              isActive={true}
-              format={format}
-              photo={true}
-              photoHdr={format?.supportsPhotoHdr && enableHdr}
-              //enableZoomGesture
-            />
-
-            <TouchableOpacity
-              style={CameraComponentStyles.takePhotoButton}
-              onPress={takeSimplePhoto}></TouchableOpacity>
-            <View style={CameraComponentStyles.settingsContainer}>
-              <SettingsComponent />
-            </View>
-            <View
-              style={{
-                width: 120,
-                position: 'absolute',
-                height: 30,
-                bottom: 150,
-                left: 140,
-                flexDirection: 'row',
-                gap: 20,
-              }}>
-              {[0.5, 1, 2].map(zoomItem => {
-                return (
-                  <TouchableOpacity
-                    style={{
-                      flex: 1,
-                      backgroundColor: 'white',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      borderRadius: 30,
-                    }}
-                    onPress={() => handleZoom(zoomItem)}
-                    key={zoomItem}>
-                    <Text style={{color: 'black'}}>x{zoomItem}</Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-            {photoList.length > 0 && (
-              <View style={CameraComponentStyles.previewContainerPhotos}>
-                <PreviewPhotosComponent
-                  photosHistoricalLength={photosHistoricalLength}
-                  photoList={photoList}
+        <GestureHandlerRootView style={{flex: 1}}>
+          <View style={CameraComponentStyles.container}>
+            <GestureDetector gesture={gesture}>
+              <View style={{flex: 1}}>
+                <ReanimatedCamera
+                  ref={ref}
+                  style={CameraComponentStyles.camera}
+                  device={device}
+                  isActive={true}
+                  format={format}
+                  photo={true}
+                  photoHdr={format?.supportsPhotoHdr && enableHdr}
+                  animatedProps={animatedProps}
                 />
+                <TouchableOpacity
+                  style={CameraComponentStyles.takePhotoButton}
+                  onPress={takeSimplePhoto}></TouchableOpacity>
+                <View style={CameraComponentStyles.settingsContainer}>
+                  <SettingsComponent />
+                </View>
+                <View
+                  style={{
+                    width: 120,
+                    position: 'absolute',
+                    height: 30,
+                    bottom: 150,
+                    left: 140,
+                    flexDirection: 'row',
+                    gap: 20,
+                  }}>
+                  {[0.5, 1, 2].map(zoomItem => {
+                    return (
+                      <TouchableOpacity
+                        style={{
+                          flex: 1,
+                          backgroundColor: 'white',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          borderRadius: 30,
+                        }}
+                        onPress={() => handleZoom(zoomItem)}
+                        key={zoomItem}>
+                        <Text style={{color: 'black'}}>x{zoomItem}</Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+                {photoList.length > 0 && (
+                  <View style={CameraComponentStyles.previewContainerPhotos}>
+                    <PreviewPhotosComponent
+                      photosHistoricalLength={photosHistoricalLength}
+                      photoList={photoList}
+                    />
+                  </View>
+                )}
               </View>
-            )}
-          </GestureDetector>
-        </View>
+            </GestureDetector>
+          </View>
+        </GestureHandlerRootView>
       );
     }
   },
